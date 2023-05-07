@@ -5,6 +5,7 @@ import "./styles.css";
 import { loadPost } from "../../utils/load-posts";
 import { Posts } from "../../components/Posts";
 import { Button } from "../../components/Button";
+import { TextInput } from "../../components/TextInput";
 
 export class Home extends Component {
   state = {
@@ -48,22 +49,30 @@ export class Home extends Component {
     const noMorePosts = page + postsPerPage >= allPosts.length;
     
     const filteredPosts = !!searchValue ? 
-    posts.filter(post => {
-      return post.title.toLowerCase()
+    allPosts.filter(post => {
+      return post.title.toLowerCase().includes(
+        searchValue.toLocaleLowerCase()
+      )
     }) 
     : 
     posts;
     
     return (
       <section className="container">
-        <input 
-          onChange={this.handleChange}
-          value={searchValue}
-          type="search" 
-        />
-        <br /><br /><br />
+        <div className="search-container">
+          {!!searchValue && (
+            <h1>Search value: {searchValue}</h1>
+          )}
 
-        <Posts posts={filteredPosts} />
+          <TextInput searchValue={searchValue} handleChange={this.handleChange} />
+        </div>
+
+        {filteredPosts.length > 0 && (
+          <Posts posts={filteredPosts} />
+        )}
+        {filteredPosts.length === 0 && (
+          <p>Não existem posts =(</p>
+        )}
         <div className="button-container">
           {!searchValue && (
             <Button
